@@ -21,8 +21,6 @@ data = load([path,file]);
 rm  = data.hil_resha_aligned(:,:,3);
 tend = toc(tstart);
 [range_bins, time_bins] = size(rm);
-n_samples = range_bins * time_bins;
-
 fprintf('Finished loading... \n')
 fprintf('Load time           : %.3f s\n', tend )
 fprintf('--------------------------------\n')
@@ -34,9 +32,8 @@ fprintf('Number of time bins : %.0f\n\n', time_bins)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Ts = 0.0082;    %   Sampling time (s): PRF = 122 Hz -> Ts = 1/PRF = 8.2 ms
-fs = 1/Ts;      %   Sampling frequency (Hz)
 f0 = 4.3e9;     %   Carrier frequency (Hz)
-lambda0 = c/f0; %   Carrier wavelength (m)
+lambda0 = 1/f0; %   Carrier wavelength (m)
 BW = 2.2e9;     %   Bandwidth (Hz)
 
 fprintf('--------------------------------\n')
@@ -51,11 +48,10 @@ range_resolution = c/(2*BW);
 fprintf('Range resolution : %.4f m\n', range_resolution)
 time = linspace(0, time_bins*Ts, time_bins);
 range = linspace(0, range_bins*range_resolution, range_bins);
-freq = linspace(-fs/2, fs, n_samples);
 
 h1 = figure(1);
 set(h1,'Position',[100 100 900 400])
-imagesc(time, range, db(abs(rm)));
+imagesc(time, range, 20*log10(abs(rm)));
 axis xy;
 colormap('turbo');
 axis xy;
@@ -63,3 +59,12 @@ colorbar('EastOutside');
 xlabel("Time (s)"); 
 ylabel("Range (m)");
 
+h1 = figure(2);
+set(h1,'Position',[100 100 900 400])
+imagesc(20*log10(abs(fft(rm))));
+axis xy;
+colormap('turbo');
+axis xy;
+colorbar('EastOutside'); 
+xlabel("Time (s)"); 
+ylabel("Frequency (Hz)");
