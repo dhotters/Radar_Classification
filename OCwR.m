@@ -49,17 +49,70 @@ fprintf('Sampling time    : %.2f ms \n', Ts*1e3)
 range_resolution = c/(2*BW);
 
 fprintf('Range resolution : %.4f m\n', range_resolution)
-time = linspace(0, time_bins*Ts, time_bins);
-range = linspace(0, range_bins*range_resolution, range_bins);
-freq = linspace(-fs/2, fs, n_samples);
+time_axis = (0:time_bins-1)*Ts;
+range_axis = linspace(1, 4.8, range_bins);
+frequency_axis = linspace(-fs/2, fs/2, n_samples/time_bins);
+
+frequency_plot = fftshift(fft(rm, [], 1),1);
+
+% 
+% onesweep = true;
+% sample_number = linspace(1, time_bins, time_bins);
+% filestring = 'test';
+% if onesweep
+%     video_file=['./',filestring,'.avi'];
+%     writerObj = VideoWriter(video_file);
+%     open(writerObj); 
+%     for i=1:length(sample_number)
+%         sample = sample_number(i);
+%         one_sweep = rm(:,sample);
+%         one_sweep_fft = fftshift(fft(one_sweep, [], 1),1);
+% 
+%         h2 = figure(2);
+%         set(h2,'Position',[100 100 900 400])
+% 
+%         subplot(2,1,1)
+%         plot(range_axis, db(abs(one_sweep)),'linewidth',2)
+%         title('Sample', num2str(i))
+%         grid()
+%         xlim([1, 4.8])
+%         ylim([0, 130])
+%         xlabel('Range (m)')
+%         ylabel('Power (dB)')
+% 
+%         subplot(2,1,2)
+%         plot(frequency_axis, db(abs(one_sweep_fft)),'linewidth',2)
+%         ylim([0, 130])
+%         xlim([min(frequency_axis), max(frequency_axis)])
+%         grid()
+%         xlabel('Frequency (Hz)')
+%         ylabel('Power (dB)')
+%         frame = getframe(h2);
+%         writeVideo(writerObj,frame);
+%     end
+%     close(writerObj);
+% end
+
 
 h1 = figure(1);
+subplot(2,1,1)
 set(h1,'Position',[100 100 900 400])
-imagesc(time, range, db(abs(rm)));
+imagesc(time_axis, range_axis, db(abs(rm)));
+set(gca,'clim',[0,130])
 axis xy;
 colormap('turbo');
 axis xy;
 colorbar('EastOutside'); 
 xlabel("Time (s)"); 
 ylabel("Range (m)");
+
+subplot(2,1,2)
+imagesc(time_axis, frequency_axis, db(frequency_plot));
+set(gca,'clim',[0, 130])
+axis xy;
+colormap('turbo');
+axis xy;
+colorbar('EastOutside'); 
+xlabel("Time (s)"); 
+ylabel("Frequency (Hz)");
 
