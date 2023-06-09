@@ -98,7 +98,7 @@ h1 = figure(1);
 subplot(2,1,1)
 set(h1,'Position',[100 100 900 400])
 imagesc(time_axis, range_axis, db(abs(rm)));
-set(gca,'clim',[0,130])
+set(gca,'clim',[0,110])
 axis xy;
 colormap('turbo');
 axis xy;
@@ -115,4 +115,27 @@ axis xy;
 colorbar('EastOutside'); 
 xlabel("Time (s)"); 
 ylabel("Frequency (Hz)");
+
+
+
+matrix = zeros(128, 186);
+for i=1:12
+    data_new = stft(rm(i,:), fs, 'overlaplength',50, 'FFTlength', 64);
+
+    matrix = matrix + data_new;
+end
+
+h2 = figure(2);
+set(h2,'Position',[100 100 900 400])
+imagesc(db(abs(matrix)))
+set(gca,'clim',[90, 130])
+axis xy;
+colormap('turbo');
+axis xy;
+colorbar('EastOutside'); 
+xlabel("Time (s)"); 
+ylabel("Frequency (Hz)");
+
+
+
 
