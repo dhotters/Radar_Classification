@@ -118,9 +118,9 @@ ylabel("Frequency (Hz)");
 
 
 
-matrix = zeros(128, 186);
+matrix = zeros(128, 454);
 for i=1:12
-    data_new = stft(rm(i,:), fs, 'overlaplength',50, 'FFTlength', 64);
+    data_new = stft(rm(i,:), fs);
 
     matrix = matrix + data_new;
 end
