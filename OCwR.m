@@ -150,7 +150,7 @@ for j = 1:length(matrix(1, :))
     F_sum = 0;
     for i = 1:length(matrix(:, 1))
         % loop over doppler bins
-        F_ij = abs(matrix(i, j)); % spectogram value
+        F_ij = db(abs(matrix(i, j))); % spectogram value
 
         f_i = fs/length(matrix(:, 1)) * i;
 
@@ -164,12 +164,23 @@ for j = 1:length(matrix(1, :))
     s = 0;
     for i = 1:length(matrix(:, 1))
         % loop over doppler bins
-        F_ij = abs(matrix(i, j)); % spectogram value
-        s = s + (f_i - fc_j).^2*F_ij;
+        F_ij = db(abs(matrix(i, j))); % spectogram value
+        s = s + (f_i - fc_j)^2*F_ij;
     end
 
     B_cj = sqrt(s/F_sum);
     bc(j) = B_cj;
 end
+
+% histogram
+% h3 = figure(3);
+% histogram(db(abs(matrix)));
+
+%% Our features
+f_torso = mean(fc);
+BW_torso = max(fc) - min(fc);
+BW_tot = mean(bc);
+mu = mean(db(abs(matrix)), "all"); % average signal strenght
+sigma = std(db(abs(matrix)),0 , "all"); % standard deviation of the histogram
 
 
