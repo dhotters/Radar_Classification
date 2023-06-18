@@ -119,16 +119,16 @@ ylabel("Frequency (Hz)");
 
 
 matrix = zeros(128, 454);
-for i=1:12
+for i=1:480
     data_new = stft(rm(i,:), fs);
-
     matrix = matrix + data_new;
+    
 end
 
 h2 = figure(2);
 set(h2,'Position',[100 100 900 400])
 imagesc(db(abs(matrix)))
-set(gca,'clim',[90, 130])
+%set(gca,'clim',[90, 130])
 axis xy;
 colormap('turbo');
 axis xy;
@@ -173,8 +173,8 @@ for j = 1:length(matrix(1, :))
 end
 
 % histogram
-% h3 = figure(3);
-% histogram(db(abs(matrix)));
+h3 = figure(3);
+histogram(db(abs(matrix)));
 
 %% Our features
 f_torso = mean(fc);

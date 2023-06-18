@@ -118,16 +118,16 @@ ylabel("Frequency (Hz)");
 
 
 
-matrix = zeros(128, 454);
+matrix = zeros(256, 238);
 for i=1:12
-    data_new = stft(rm(i,:), fs);
+    data_new = fftshift(spectrogram(rm(I), fs));
 
-    matrix = matrix + data_new;
+    
 end
 
 h2 = figure(2);
 set(h2,'Position',[100 100 900 400])
-imagesc(db(abs(matrix)))
+imagesc(db(abs(data_new)))
 set(gca,'clim',[90, 130])
 axis xy;
 colormap('turbo');
@@ -172,13 +172,15 @@ for j = 1:length(matrix(1, :))
     bc(j) = B_cj;
 end
 
-f_torso = m
-
 % histogram
 h3 = figure(3);
-dat = db(abs(matrix));
-histogram(dat);
-mu = mean(dat, "all");
-sigma = std(dat,0, "all"); % standard deviation of the histogram
+histogram(db(abs(matrix)));
+
+%% Our features
+f_torso = mean(fc);
+BW_torso = max(fc) - min(fc);
+BW_tot = mean(bc);
+mu = mean(db(abs(matrix)), "all"); % average signal strenght
+sigma = std(db(abs(matrix)),0 , "all"); % standard deviation of the histogram
 
 
