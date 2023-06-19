@@ -3,4 +3,3 @@ function [svm_model] = classifier(training_data, validation_data)
 
 svm_model = fitcecoc(Tbl,ResponseVarName);
 end
-
