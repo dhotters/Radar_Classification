@@ -141,10 +141,10 @@ BW = 2.2e9;     %   Bandwidth (Hz)
 
 num_training_dat = 3; % amount of files to use for training
 num_features = 4;
-num_people = 15;
+num_people = 3;
 
-Data_table = zeros(15*num_training_dat, num_features);
-labels = zeros(15*num_training_dat, 1);
+Data_table = zeros(num_people*num_training_dat, num_features);
+labels = zeros(num_people*num_training_dat, 1);
 
 data_folder = "D:\radar data\repo\data\";
 tic
@@ -164,25 +164,21 @@ for root_folder_idx = 1:num_people
         % STFT
         rm  = data.hil_resha_aligned(:,:,3);
 
-        matrix = zeros(128, 454);
-        for i=1:480
-            data_new = stft(rm(i,:), fs);
-            matrix = matrix + data_new;
-        end
+        [TimeAxisSpectrogram, DopplerAxisSpectrogram, Data_spectrogram2] = stft_OCwR(rm);
 
         % extract features
-        [f_torso, BW_torso, BW_tot, sigma] = getFeatures(matrix, fs);
+        [f_torso, BW_torso, BW_tot, sigma] = getFeatures(Data_spectrogram2, fs);
 
         % add to table
-        Data_table(root_folder_idx, 1:num_features) = [f_torso, BW_torso, BW_tot, sigma];
+        Data_table(root_folder_idx*3+file_idx-3, 1:num_features) = [f_torso, BW_torso, BW_tot, sigma];
         
         % add label
-        labels(root_folder_idx*3+k-3) = root_folder_idx;
+        labels(root_folder_idx*3+file_idx-3) = root_folder_idx;
     end
 end
 toc
 
 
 %% Train classifier
-
+classifier = fitcecoc(Data_table, labels);
 
