@@ -141,7 +141,7 @@ BW = 2.2e9;     %   Bandwidth (Hz)
 
 num_training_dat = 3; % amount of files to use for training
 num_features = 4;
-num_people = 3;
+num_people = 15;
 
 Data_table = zeros(num_people*num_training_dat, num_features);
 labels = zeros(num_people*num_training_dat, 1);
