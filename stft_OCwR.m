@@ -10,9 +10,9 @@ n_samples = length(rm);
 Ts = PRF/2;
 
 myvector = sum(rm(Rbin_start:Rbin_stop,:));
-record_length=length(rm)/n_samplesTs;
+record_length=length(rm)/n_samples*Ts;
 
-Data_spectrogram=fftshift(spectrogram(myvector,WindowLength,round(WindowLengthOverlapPercentage),NFFTPoints),1);
+Data_spectrogram=fftshift(spectrogram(myvector,WindowLength,round(WindowLength*OverlapPercentage),NFFTPoints),1);
 Data_spectrogram=flipud(Data_spectrogram);
 DopplerAxisSpectrogram=linspace(-PRF/2,PRF/2,size(Data_spectrogram,1));
 TimeAxisSpectrogram=linspace(0, record_length, size(Data_spectrogram,2));
@@ -20,7 +20,7 @@ TimeAxisSpectrogram=linspace(0, record_length, size(Data_spectrogram,2));
 
 Data_spectrogram2=0;
 for RBin=Rbin_start:1:Rbin_stop
-    Data_temp = fftshift(spectrogram(rm(RBin,:),WindowLength,round(WindowLengthOverlapPercentage),NFFTPoints),1);
+    Data_temp = fftshift(spectrogram(rm(RBin,:),WindowLength,round(WindowLength*OverlapPercentage),NFFTPoints),1);
     Data_spectrogram2=Data_spectrogram2+abs(Data_temp);
 end
 
