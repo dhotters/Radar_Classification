@@ -162,12 +162,12 @@ for root_folder_idx = 1:num_people
         data = load(root_folder + current_file);
 
         % STFT
-        rm  = data.hil_resha_aligned(:,:,3);
+        rm = data.hil_resha_aligned(:,:,3);
 
         [TimeAxisSpectrogram, DopplerAxisSpectrogram, Data_spectrogram2] = stft_OCwR(rm);
 
         % extract features
-        [f_torso, BW_torso, BW_tot, sigma] = getFeatures(Data_spectrogram2, fs);
+        [f_torso, BW_torso, BW_tot, sigma] = getFeatures(Data_spectrogram2, 1/Ts);
 
         % add to table
         Data_table(root_folder_idx*3+file_idx-3, 1:num_features) = [f_torso, BW_torso, BW_tot, sigma];
