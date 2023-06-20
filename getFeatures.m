@@ -14,7 +14,6 @@ for j = 1:length(matrix(1, :))
         % loop over doppler bins
         F_ij = db(abs(matrix(i, j))); % spectogram value
 
-        %f_i = fs/length(matrix(:, 1)) * i; %% TODO Change between -PRF/2 and PRF/2
         f_i = PRF/length(matrix(:, 1)) * i - PRF/2;
 
         fF_sum = fF_sum + f_i * F_ij;

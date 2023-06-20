@@ -140,14 +140,18 @@ BW = 2.2e9;     %   Bandwidth (Hz)
 
 
 num_data = 4;
-num_training_dat = 3; % amount of files to use for training
+num_training_dat = 3;
 num_features = 5;
 num_people = 15;
 
-Data_table = zeros(num_people*num_training_dat, num_features);
-labels = zeros(num_people*num_training_dat, 1);
+num_division = 4;
 
-data_folder = "D:\radar data\repo\data\";
+Data_table = zeros(num_people*num_training_dat*num_division, num_features);
+labels = zeros(num_people*num_training_dat*num_division, 1);
+
+% data_folder = "D:\radar data\repo\data\";
+% 
+% cur_row_idx = 1;
 % tic
 % for root_folder_idx = 1:num_people
 %     root_folder = data_folder + string(root_folder_idx) + "\";
@@ -156,30 +160,46 @@ data_folder = "D:\radar data\repo\data\";
 %     listing = dir(root_folder);
 % 
 %     for file_idx = 1:num_data
+%         disp("File " + string(file_idx) + " of folder " + string(root_folder_idx));
+% 
 %         % get file
 %         current_file = listing(file_idx+2).name;
 % 
-%         % read
+%         % read data
 %         data = load(root_folder + current_file);
 % 
-%         % STFT
+%         % only channel 3 required
 %         rm = data.hil_resha_aligned(:,:,3);
 % 
-%         [TimeAxisSpectrogram, DopplerAxisSpectrogram, Data_spectrogram2] = stft_OCwR(rm);
+%         % split data into its segments
+%         start_idx = 1;
+%         for segment = 1:num_division
+%             
+%             cut_point = round(length(rm) / num_division * segment);
+%             rm_current = rm(:, start_idx:cut_point);
 % 
-%         % extract features
-%         [f_torso, BW_torso, BW_tot, sigma, mu] = getFeatures(Data_spectrogram2, 1/Ts);
+%             % STFT
+%             [TimeAxisSpectrogram, DopplerAxisSpectrogram, Data_spectrogram2] = stft_OCwR(rm_current);
 % 
-%         % add to table
-%         Data_table(root_folder_idx*num_data+file_idx-num_data, 1:num_features) = [f_torso, BW_torso, BW_tot, sigma, mu];
-%         
-%         % add label
-%         labels(root_folder_idx*num_data+file_idx-num_data) = root_folder_idx;
+%             % extract features
+%             [f_torso, BW_torso, BW_tot, sigma, mu] = getFeatures(Data_spectrogram2, 1/Ts);
+% 
+%             % add to tabled
+%             Data_table(cur_row_idx, 1:num_features) = [f_torso, BW_torso, BW_tot, sigma, mu];
+% 
+%             % add label
+%             labels(cur_row_idx) = root_folder_idx;
+% 
+%             % set start index as prev
+%             start_idx = cut_point;
+% 
+%             cur_row_idx = cur_row_idx + 1;
+%         end
 %     end
 % end
 % toc
-
-%% Save all data
+% 
+% %% Save all data
 % save("Data_table.mat", "Data_table");
 % save("labels.mat", "labels");
 

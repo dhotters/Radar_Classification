@@ -19,24 +19,27 @@ end
 
 Data_spectrogram2=flipud(Data_spectrogram2);
 plot_data = abs(Data_spectrogram2);
-Data_spectrogram2 = plot_data./max(plot_data);
+Data_spectrogram2 = db(plot_data);
 
-clipping_level = -10.0; % dB
-clipping_level = 10^(clipping_level/20);
+clipping_th = - 35; % thershold for clipping (dB)
+clipping_set = -50; % values below the threshold get set to this value (dB)
+clipping_level = max(max(Data_spectrogram2)) + clipping_th;
 
-Data_spectrogram2(Data_spectrogram2<clipping_level)= clipping_level;
+Data_spectrogram2(Data_spectrogram2<clipping_level)= max(max(Data_spectrogram2)) + clipping_set;
 
 DopplerAxisSpectrogram=linspace(-PRF/2,PRF/2,size(Data_spectrogram2,1));
 TimeAxisSpectrogram=linspace(0, record_length, size(Data_spectrogram2,2));
-
+%
 % h2 = figure(2);
 % set(h2,'Position',[100 100 900 400])
-% imagesc(TimeAxisSpectrogram,DopplerAxisSpectrogram,20*log10(abs(Data_spectrogram2)./max(abs(Data_spectrogram2)))); 
-% ylim([-PRF/2 PRF/2]);
-% axis xy;
-% colormap('turbo');
-% axis xy;
-% colorbar('EastOutside'); 
-% xlabel("Time (s)"); 
-% ylabel("Frequency (Hz)");
+% colormap('turbo'); 
+% imagesc(TimeAxisSpectrogram,DopplerAxisSpectrogram, Data_spectrogram2); 
+% axis xy
+% ylim([-PRF/2 PRF/2]); 
+% colorbar;
+% clim = get(gca,'CLim');
+% set(gca, 'CLim',[clipping_level, clipping_level - clipping_th]);
+% xlabel('Time (s)');
+% ylabel('Doppler (Hz)')
+% set(gca,'FontSize',16)
 end
