@@ -147,37 +147,40 @@ Data_table = zeros(num_people*num_training_dat, num_features);
 labels = zeros(num_people*num_training_dat, 1);
 
 data_folder = "D:\radar data\repo\data\";
-tic
-for root_folder_idx = 1:num_people
-    root_folder = data_folder + string(root_folder_idx) + "\";
+% tic
+% for root_folder_idx = 1:num_people
+%     root_folder = data_folder + string(root_folder_idx) + "\";
+% 
+%     % get directory and file names
+%     listing = dir(root_folder);
+% 
+%     for file_idx = 1:num_training_dat
+%         % get file
+%         current_file = listing(file_idx+2).name;
+% 
+%         % read
+%         data = load(root_folder + current_file);
+% 
+%         % STFT
+%         rm = data.hil_resha_aligned(:,:,3);
+% 
+%         [TimeAxisSpectrogram, DopplerAxisSpectrogram, Data_spectrogram2] = stft_OCwR(rm);
+% 
+%         % extract features
+%         [f_torso, BW_torso, BW_tot, sigma] = getFeatures(Data_spectrogram2, 1/Ts);
+% 
+%         % add to table
+%         Data_table(root_folder_idx*3+file_idx-3, 1:num_features) = [f_torso, BW_torso, BW_tot, sigma];
+%         
+%         % add label
+%         labels(root_folder_idx*3+file_idx-3) = root_folder_idx;
+%     end
+% end
+% toc
 
-    % get directory and file names
-    listing = dir(root_folder);
-
-    for file_idx = 1:num_training_dat
-        % get file
-        current_file = listing(file_idx+2).name;
-
-        % read
-        data = load(root_folder + current_file);
-
-        % STFT
-        rm = data.hil_resha_aligned(:,:,3);
-
-        [TimeAxisSpectrogram, DopplerAxisSpectrogram, Data_spectrogram2] = stft_OCwR(rm);
-
-        % extract features
-        [f_torso, BW_torso, BW_tot, sigma] = getFeatures(Data_spectrogram2, 1/Ts);
-
-        % add to table
-        Data_table(root_folder_idx*3+file_idx-3, 1:num_features) = [f_torso, BW_torso, BW_tot, sigma];
-        
-        % add label
-        labels(root_folder_idx*3+file_idx-3) = root_folder_idx;
-    end
-end
-toc
-
+% Load
+Data_table = load("Data_table.mat").Data_table;
+labels = load("labels.mat").labels;
 
 %% Train classifier
 classifier = fitcecoc(Data_table, labels);

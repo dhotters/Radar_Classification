@@ -19,11 +19,12 @@ end
 
 Data_spectrogram2=flipud(Data_spectrogram2);
 plot_data = abs(Data_spectrogram2);
-Data_spectrogram2 = db(plot_data./max(plot_data));
+Data_spectrogram2 = plot_data./max(plot_data);
 
-clipping_level = -10.0;
+clipping_level = -10.0; % dB
+clipping_level = 10^(clipping_level/20);
 
-Data_spectrogram2(Data_spectrogram2<clipping_level)=NaN;
+Data_spectrogram2(Data_spectrogram2<clipping_level)= clipping_level;
 
 DopplerAxisSpectrogram=linspace(-PRF/2,PRF/2,size(Data_spectrogram2,1));
 TimeAxisSpectrogram=linspace(0, record_length, size(Data_spectrogram2,2));
