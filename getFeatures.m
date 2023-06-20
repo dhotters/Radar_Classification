@@ -1,4 +1,4 @@
-function [f_torso, BW_torso, BW_tot, sigma] = getFeatures(matrix, PRF)
+function [f_torso, BW_torso, BW_tot, sigma, mu] = getFeatures(matrix, PRF)
 %% Feature extraction
 % using equations given lecture 7 slide 14
 % F(i, j) is the spectogram where i is the doppler bin and j the time bin

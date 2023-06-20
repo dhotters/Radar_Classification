@@ -139,8 +139,9 @@ BW = 2.2e9;     %   Bandwidth (Hz)
 %% Create data structure for classifier
 
 
+num_data = 4;
 num_training_dat = 3; % amount of files to use for training
-num_features = 4;
+num_features = 5;
 num_people = 15;
 
 Data_table = zeros(num_people*num_training_dat, num_features);
@@ -154,7 +155,7 @@ data_folder = "D:\radar data\repo\data\";
 %     % get directory and file names
 %     listing = dir(root_folder);
 % 
-%     for file_idx = 1:num_training_dat
+%     for file_idx = 1:num_data
 %         % get file
 %         current_file = listing(file_idx+2).name;
 % 
@@ -167,21 +168,58 @@ data_folder = "D:\radar data\repo\data\";
 %         [TimeAxisSpectrogram, DopplerAxisSpectrogram, Data_spectrogram2] = stft_OCwR(rm);
 % 
 %         % extract features
-%         [f_torso, BW_torso, BW_tot, sigma] = getFeatures(Data_spectrogram2, 1/Ts);
+%         [f_torso, BW_torso, BW_tot, sigma, mu] = getFeatures(Data_spectrogram2, 1/Ts);
 % 
 %         % add to table
-%         Data_table(root_folder_idx*3+file_idx-3, 1:num_features) = [f_torso, BW_torso, BW_tot, sigma];
+%         Data_table(root_folder_idx*num_data+file_idx-num_data, 1:num_features) = [f_torso, BW_torso, BW_tot, sigma, mu];
 %         
 %         % add label
-%         labels(root_folder_idx*3+file_idx-3) = root_folder_idx;
+%         labels(root_folder_idx*num_data+file_idx-num_data) = root_folder_idx;
 %     end
 % end
 % toc
+
+%% Save all data
+% save("Data_table.mat", "Data_table");
+% save("labels.mat", "labels");
 
 % Load
 Data_table = load("Data_table.mat").Data_table;
 labels = load("labels.mat").labels;
 
+%% Segment into validation data and training data
+% take every 4th row
+indexes = 1:size(Data_table);
+segmented_idx = indexes(num_training_dat+1:num_training_dat+1:end);
+temp = Data_table;
+
+training_data = temp(segmented_idx, :);
+validation_data = Data_table(segmented_idx, :);
+
+% do same for the labels
+temp = labels;
+training_labels = temp(segmented_idx, :);
+validation_labels = labels(segmented_idx, :);
+
 %% Train classifier
-classifier = fitcecoc(Data_table, labels);
+classifier = fitcecoc(training_data, training_labels);
+
+
+%% Test classifier
+correct = 0;
+t = 0;
+for i = 1:length(validation_data)
+    cur_features = validation_data(i, :);
+
+    % get the predicted label
+    pred_label = predict(classifier, cur_features);
+
+    % compare
+    if pred_label == validation_labels(i)
+        correct = correct + 1;
+    end
+    t = t + 1;
+end
+
+display(correct/t * 100 + "% correct")
 
