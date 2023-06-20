@@ -191,14 +191,14 @@ labels = load("labels.mat").labels;
 % take every 4th row
 indexes = 1:size(Data_table);
 segmented_idx = indexes(num_training_dat+1:num_training_dat+1:end);
-temp = Data_table;
+training_data = Data_table;
 
-training_data = temp(segmented_idx, :);
+training_data(segmented_idx, :) = [];
 validation_data = Data_table(segmented_idx, :);
 
 % do same for the labels
-temp = labels;
-training_labels = temp(segmented_idx, :);
+training_labels = labels;
+training_labels(segmented_idx, :) = [];
 validation_labels = labels(segmented_idx, :);
 
 %% Train classifier
