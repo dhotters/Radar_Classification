@@ -207,6 +207,14 @@ labels = zeros(num_people*num_training_dat*num_division, 1);
 Data_table = load("Data_table.mat").Data_table;
 labels = load("labels.mat").labels;
 
+%% min max scaling
+for i = 1:num_features
+    minimum = min(Data_table(:, i));
+    maximum = max(Data_table(:, i));
+    
+    Data_table(:, i) = (Data_table(:, i) - minimum)/(maximum-minimum);
+end
+
 %% Segment into validation data and training data
 % take every 4th row
 indexes = 1:size(Data_table);
